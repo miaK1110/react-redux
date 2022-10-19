@@ -1,22 +1,27 @@
-import { createStore } from 'redux';
+// configureStore(): wraps createStore to provide simplified configuration options and good defaults. It can automatically combine your slice reducers, adds whatever Redux middleware you supply, includes redux-thunk by default, and enables use of the Redux DevTools Extension.
 
-const reducerFn = (state = { counter: 0 }, action) => {
-  // Synchronous Function
-  // We should not mutate the original state
-  // So it should always be a copy of the original state
+// createSlice(): accepts an object of reducer functions, a slice name, and an initial state value, and automatically generates a slice reducer with corresponding action creators and action types. these are know as the action creater, they automatically add an action identifiers and then pass to the reducer functions. We can mutate the state using createSlice. Redux toolkit uses a new package which will help us to mutate the state and then it automatically identifies that which state has been changed. And then it will send an automatically created copy of the state to the main app.
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-  if (action.type === 'INC') {
-    return { counter: state.counter + 1 };
-  }
-  if (action.type === 'DEC') {
-    return { counter: state.counter - 1 };
-  }
-  if (action.type === 'ADD') {
-    return { counter: state.counter + action.payload };
-  }
-  return state;
-};
+const CounterSlice = createSlice({
+  name: 'counter',
+  initialState: { counter: 0 },
+  reducer: {
+    increment(state, action) {
+      state.counter++;
+    },
+    decrement(state, action) {
+      state.counter--;
+    },
+    addBy(state, action) {
+      state.counter += action.payload;
+    },
+  },
+});
 
-const store = createStore(reducerFn);
-
+export const actions = CounterSlice.actions;
+// contains property of the reducer and thea we can provide it
+const store = configureStore({
+  reducer: CounterSlice.reducer,
+});
 export default store;
